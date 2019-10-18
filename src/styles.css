@@ -1,1 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+.main-container{
+    margin-top: 60px;
+}
+
+.card-datatables .card-body{
+    padding: 0;
+}
+
+.card-datatables .card-body table.dataTable{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.card-datatables .card-footer .dataTables_paginate ul.pagination{
+    float: right;
+    margin-bottom: 0;
+}
+
+.card-datatables .card-footer .dataTables_info{
+    margin-top: 5px;
+}
+
+.hide{
+    display: none;
+}
+
