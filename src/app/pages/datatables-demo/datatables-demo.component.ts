@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { Datatables as DatatablesUtils } from '../../utils/Datatables';
-import { AuthorsService } from '../../services/authors.service';
-import { Select2OptionData } from 'ng2-select2';
+
 import Swal from 'sweetalert2';
-import { BooksService } from 'src/app/services/books.service';
-import { Select2 as Select2Utils } from '../../utils/Select2';
+
+import { BooksService } from '../../services/books.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 declare var $;
 
@@ -14,26 +14,13 @@ declare var $;
   styleUrls: ['./datatables-demo.component.css']
 })
 export class DatatablesDemoComponent implements OnInit, AfterViewInit {
-  @ViewChild('selectSearchAuthor', {static: false}) select2Author: any;
+  @ViewChild('template', {static: false}) template: TemplateRef<any>;
   @ViewChild('dataTable', {static: false}) table: ElementRef;
 
-
-  public select2Options: Select2Options = Select2Utils.getDefaultOptions();
+  public modalRef: BsModalRef;
 
   nested: ContainerDatatables = {
     dtOptions: {}
-  };
-
-  authors: Data = {
-    data: [],
-    selected: null,
-    loading: false
-  };
-
-  publishers: Data = {
-    data: [],
-    selected: null,
-    loading: false
   };
 
   form: Form = {
@@ -41,17 +28,12 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
   };
 
   constructor(
-    private booksService: BooksService,
-    private authorsService: AuthorsService
+    private modalService: BsModalService,
+    private booksService: BooksService
   ) { }
-
-  updateEmitter($event) {
-    console.log('event emitter', $event);
-  }
 
   ngOnInit() {
     this.loadDatatableOptions();
-    this.getAuthors();
   }
 
   ngAfterViewInit() {
@@ -61,10 +43,9 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
 
     this.nested.table
       .on('click', '.opt-edit', function(event: JQuery.Event) {
-        const $this: any = $(this);
-        const $row: any = $this.parents('tr[role="row"]');
+        const id: number = $(this).data('id');
 
-        console.log('edit');
+        vm.getBook(id);
       })
       .on('click', '.opt-delete', function(event: JQuery.Event) {
         const id: number = $(this).data('id');
@@ -180,54 +161,37 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
     };
   }
 
-  reloadData(resetPaging: boolean): void {
-    DatatablesUtils.reloadData(this.nested.dtInstance, resetPaging);
-  }
-
-  getAuthors(): void {
-    this.authors.loading = true;
-
-    this.authorsService.getAuthors()
+  getBook(id: number) {
+    this.booksService.getBook(id)
         .subscribe((response: Api) => {
-          const authors: Array<Select2OptionData> = response.data.map((author: Author) => {
-            return {
-              id: author.id,
-              text: author.name,
-            };
-          });
-
-          this.authors.data = authors;
-          this.authors.loading = false;
+            this.openModal(response.data);
         });
   }
 
-  eventChangeSelect(e: any, field: string): void {
-    const value = e.value;
+  reloadData(resetPaging: boolean): void {
+    console.log('reloadData', resetPaging);
 
-    delete this.form.data[field];
+    DatatablesUtils.reloadData(this.nested.dtInstance, resetPaging);
+  }
 
-    if (value) {
-      this.form.data[field] = {
-        id: value
-      };
-    }
+  updateSearchForm($event: any): void {
+    this.form.data = $event;
 
     this.reloadData(true);
   }
 
-  clearForm(): void {
-    const select2Elements: any[] = [
+  openModal(data: any) {
+    this.modalRef = this.modalService.show(
+      this.template,
       {
-        element: this.select2Author.element,
-        field: 'author'
+        backdrop: 'static',
+        keyboard: false
       }
-    ];
+    );
 
-    select2Elements.forEach( item  => {
-      item.element.val(null).trigger('change');
-
-      this.eventChangeSelect({value: null, data: []}, item.field);
-    });
+    this.modalRef.content = {
+      title: 'Create Book',
+      data
+    };
   }
-
 }

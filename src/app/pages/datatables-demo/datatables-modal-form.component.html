@@ -1,0 +1,88 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{ modalRef.content.title }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form id="frm_books" name="frm_books" [formGroup]="form.container">
+		<div class="form-group">
+			<label for="title">Title</label>
+			<input type="text"
+				   formControlName="title"	
+				   class="form-control"
+                   required="true"
+                   [ngClass]="{'is-invalid': (!f.title.pristine || form.submitted) && f.title.errors }" />
+		   	<div *ngIf="(!f.title.pristine || form.submitted) && f.title.errors" 
+		   		 class="invalid-feedback">
+				<span *ngIf="f.title.errors.required">Required field</span>
+			</div>
+		</div>
+
+        <div class="form-group">
+			<label for="summary">Summary</label>
+			<textarea
+				formControlName="summary"	
+                required="true"
+                [ngClass]="{'is-invalid': (!f.summary.pristine || form.submitted) && f.summary.errors }"
+				class="form-control"></textarea>
+
+			<div *ngIf="(!f.summary.pristine || form.submitted) && f.summary.errors"
+                 class="invalid-feedback">
+				<span *ngIf="f.summary.errors.required">Required field</span>
+			</div>
+		</div>
+
+        <div class="form-group">
+			<label for="description">Descripción</label>
+			<textarea
+				formControlName="description"	
+                required="true"
+                [ngClass]="{'is-invalid': (!f.description.pristine || form.submitted) && f.description.errors }"
+				class="form-control"></textarea>
+
+			<div *ngIf="(!f.description.pristine || form.submitted) && f.description.errors"
+                 class="invalid-feedback">
+				<span *ngIf="f.description.errors.required">Required field</span>
+			</div>
+		</div>
+
+        <div class="form-group" [ngClass]="{'has-error': (!f.author_id.pristine || form.submitted) && f.author_id.errors }">
+            <label>Author</label>
+
+            <div *ngIf="authors.data.length === 0">
+                <select2 #selectAuthor
+                        [options]="select2Options"
+                        required="true"
+                        [disabled]="authors.loading">
+                    <option></option>
+                </select2>
+            </div>
+
+            <div *ngIf="authors.data.length > 0">
+                <select2 #selectAuthor
+                        [data]="authors.data"
+                        [disabled]="authors.loading" 
+                        [options]="select2Options"
+                        required="true"
+                        (valueChanged)="eventChangeSelect($event, 'author_id')">
+                    <option></option>
+                </select2>
+            </div>
+
+            <div *ngIf="(!f.author_id.pristine || form.submitted) && f.author_id.errors"
+                 class="invalid-feedback">
+				<span *ngIf="f.author_id.errors.required">Required field</span>
+			</div>
+        </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+      <button type="button" 
+              class="btn btn-primary" 
+              [disabled]="form.container.invalid"
+              (click)="accept()">Save</button>
+      <button type="button" 
+              class="btn btn-secondary" 
+              (click)="close()">Cerrar</button>
+  </div>

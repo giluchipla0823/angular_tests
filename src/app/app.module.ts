@@ -5,15 +5,28 @@ import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng2-select2';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
 
-import { AppComponent } from './app.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { HomeComponent } from './pages/home/home.component';
-import { DatatablesDemoComponent } from './pages/datatables-demo/datatables-demo.component';
 import { APP_ROUTES } from './app.routes';
-import { FooterComponent } from './components/footer/footer.component';
-import { DatatablesFormComponent } from './pages/datatables-demo/datatables-form.component';
+
+// Components
+import {
+  AppComponent,
+  NavbarComponent,
+  FooterComponent,
+} from './components/index.component';
+
+// Pages
+import {
+  HomeComponent,
+  DatatablesDemoComponent,
+  DatatablesSearchFormComponent,
+  DatatablesModalFormComponent
+} from './pages/index.page';
+
+// Pipes
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +36,8 @@ import { DatatablesFormComponent } from './pages/datatables-demo/datatables-form
     HomeComponent,
     DatatablesDemoComponent,
     FooterComponent,
-    DatatablesFormComponent
+    DatatablesSearchFormComponent,
+    DatatablesModalFormComponent
   ],
   imports: [
     BrowserModule,
@@ -32,8 +46,10 @@ import { DatatablesFormComponent } from './pages/datatables-demo/datatables-form
     FormsModule,
     DataTablesModule,
     Select2Module,
-    APP_ROUTES
+    APP_ROUTES,
+    ModalModule.forRoot(),
   ],
+  exports: [ModalModule],
   providers: [],
   bootstrap: [AppComponent]
 })

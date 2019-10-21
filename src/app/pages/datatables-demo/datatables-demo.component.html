@@ -1,54 +1,8 @@
 <h1>Datatables demo</h1>
 <hr />
 
-<app-datatables-form 
-    (cambioValor)="reloadData($event)"></app-datatables-form>
-
-<form (ngSubmit)="reloadData(true)">
-    <div class="form-group">
-        <label for="search_title">Title</label>
-        <input type="text"
-               id="search_title"
-               name="search_title"
-               class="form-control"
-               [(ngModel)]="form.data.title" />
-    </div>
-
-    <div class="form-group">
-        <label>Author</label>
-
-        <div *ngIf="authors.data.length === 0">
-            <select2 #selectSearchAuthor
-                     [options]="select2Options"
-                     [disabled]="authors.loading">
-                <option></option>
-            </select2>
-        </div>
-
-        <div *ngIf="authors.data.length > 0">
-            <select2 #selectSearchAuthor
-                     [data]="authors.data"
-                     [disabled]="authors.loading" 
-                     [options]="select2Options"
-                     (valueChanged)="eventChangeSelect($event, 'author')">
-                <option></option>
-            </select2>
-        </div>
-    </div>
-
-    <div class="form-group">
-		<button type="submit"
-				class="btn btn-primary">
-			Buscar
-		</button>
-		&nbsp;&nbsp;
-		<button type="reset"
-				(click)="clearForm()"	
-				class="btn btn-secondary">
-			Limpiar
-		</button>
-	</div>
-</form>
+<app-datatables-search-form 
+    (updateForm)="updateSearchForm($event)"></app-datatables-search-form>
 
 <div class="card card-datatables">
     <div class="card-header">
@@ -58,6 +12,7 @@
         <div class="float-right">
             <div class="float-left">
                 <button type="button"
+                        (click)="openModal({})"
                         class="btn btn-success mr-3">
                     Create
                 </button>
@@ -81,3 +36,10 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<ng-template #template>
+  <app-datatables-modal-form 
+    (reloadData)="reloadData($event)"
+    [modalRef]="modalRef"></app-datatables-modal-form>
+</ng-template>

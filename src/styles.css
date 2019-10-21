@@ -4,6 +4,22 @@
     padding-bottom: 60px;
 }
 
+
+.has-error .select2-dropdown, 
+.has-error .select2-selection,
+.has-error .select2-container--focus .select2-selection, 
+.has-error .select2-container--open .select2-selection{
+    border-color: #dc3545;
+}
+
+.invalid-feedback{
+    display: block;
+}
+
+.invalid-feedback::before{
+    content: " * ";
+}
+
 .hide{
     display: none;
 }
