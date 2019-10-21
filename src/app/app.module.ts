@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng2-select2';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -26,6 +26,7 @@ import {
 
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 
 
 @NgModule({
@@ -50,7 +51,13 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
     ModalModule.forRoot(),
   ],
   exports: [ModalModule],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
