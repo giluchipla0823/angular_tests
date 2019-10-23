@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ProductsService } from '../../services/products.service';
 import { PokemonsService } from '../../services/pokemons.service';
 import Swal from 'sweetalert2';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -9,6 +11,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  isLoading: boolean = false;
 
   constructor(
     private productsService: ProductsService,
@@ -22,16 +26,19 @@ export class HomeComponent implements OnInit {
   }
 
   showProducts(){
+    this.isLoading = true;
     this.productsService.getProducts()
         .subscribe((response: any) => {
           console.log('success', response);
+          this.isLoading = false;
+        }, () => {
+          this.isLoading = false;
         });
   }
 
   showCUPSValidate(){
     this.productsService.getCUPSValidate()
         .subscribe((response: any) => {
-          
           console.log('showCUPSValidate', response);
         });
   }

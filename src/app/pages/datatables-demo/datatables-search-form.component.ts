@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { AuthorsService } from '../../services/authors.service';
 import { Select2 as Select2Utils } from '../../utils/Select2';
 import { Select2OptionData } from 'ng2-select2';
@@ -8,20 +8,19 @@ import { Select2OptionData } from 'ng2-select2';
   templateUrl: './datatables-search-form.component.html',
   styleUrls: ['./datatables-search-form.component.css']
 })
-export class DatatablesSearchFormComponent implements OnInit {
+export class DatatablesSearchFormComponent implements OnInit, AfterViewInit {
   @ViewChild('selectSearchAuthor', {static: false}) select2Author: any;
   @Output() updateForm: EventEmitter<any> = new EventEmitter();
-
-  public select2Options: Select2Options = Select2Utils.getDefaultOptions();
 
   form: Form = {
     data: {}
   };
 
-  authors: Data = {
+  authors: Select2Data = {
     data: [],
+    options: Select2Utils.getDefaultOptions(),
     selected: null,
-    loading: false
+    disabled: false
   };
 
   constructor(
@@ -32,12 +31,20 @@ export class DatatablesSearchFormComponent implements OnInit {
     this.getAuthors();
   }
 
+  ngAfterViewInit() {
+    // console.log(this.select2Author);
+    // Select2Utils.setEventToCloseWhenUnselecting(this.select2Author.element);
+    //setTimeout(() => {
+      Select2Utils.setEventToCloseWhenUnselecting();
+    //}, 0);
+  }
+
   search() {
     this.updateForm.emit(this.form.data);
   }
 
   getAuthors(): void {
-    this.authors.loading = true;
+    this.authors.disabled = true;
 
     this.authorsService.getAuthors()
         .subscribe((response: Api) => {
@@ -49,7 +56,7 @@ export class DatatablesSearchFormComponent implements OnInit {
           });
 
           this.authors.data = authors;
-          this.authors.loading = false;
+          this.authors.disabled = false;
         });
   }
 

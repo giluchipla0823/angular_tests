@@ -12,7 +12,7 @@ export class BooksService {
   constructor(private http: HttpClient) { }
 
   getBook(id: number): Observable<any> {
-    const url: string = `${this.BASE_URL}books/${id}`;
+    const url: string = `${this.BASE_URL}books/${id}?includes=genres`;
 
     return this.http.get(url);
   }

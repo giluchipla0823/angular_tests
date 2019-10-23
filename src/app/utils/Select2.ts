@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 export class Select2 {
     static getDefaultOptions() {
       return {
@@ -9,29 +10,30 @@ export class Select2 {
       };
     }
 
-    static setAttributesToValidate(element: JQuery, field: string) {
-        element.attr({
+    static setAttributesToValidate(el: JQuery, field: string) {
+        el.attr({
             required: true,
             id: field,
             name: field,
             formControlName: name
         });
 
-        element.addClass('select2-validator');
+        el.addClass('select2-validator');
 
-        element
-            .on('select2:unselecting', function(e: JQuery.Event) {
+        this.setEventToCloseWhenUnselecting();
+    }
+
+    static setEventToCloseWhenUnselecting() {
+        $('body')
+            .on('select2:unselecting', 'select.select2-hidden-accessible', function(e: JQuery.Event) {
                 $(this).data('state', 'unselected');
             })
-            .on('select2:open', function(e: JQuery.Event) {
+            .on('select2:open', 'select.select2-hidden-accessible', function(e: JQuery.Event) {
                 const $this =  $(this);
 
                 if ($this.data('state') === 'unselected') {
                     $this.removeData('state');
-
-                    setTimeout(() => {
-                        $this.select2('close');
-                    }, 0);
+                    $this.select2('close');
                 }
             });
     }

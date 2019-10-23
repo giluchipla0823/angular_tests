@@ -1,10 +1,11 @@
 import { FormGroup } from '@angular/forms';
 
 export class ReactiveForm {
-    public container?: FormGroup;
-    public submitted?: boolean;
+    constructor(
+        public container: FormGroup,
+        public submitted: boolean = false,
+        public isSaving: boolean = false
+    ) {
 
-    constructor() {
-        this.submitted = false;
     }
 }

@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ProductsService {
 
-  // BASE_URL: string = 'https://servicios.crea-energia.com/';
-  BASE_URL: string = 'http://cecheckout.local/';
+  BASE_URL: string = 'https://servicios.crea-energia.com/';
+  // BASE_URL: string = 'http://cecheckout.local/';
 
   constructor(private http: HttpClient) {}
 

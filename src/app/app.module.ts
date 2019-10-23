@@ -4,7 +4,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng2-select2';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { APP_ROUTES } from './app.routes';
@@ -24,9 +23,12 @@ import {
   DatatablesModalFormComponent
 } from './pages/index.page';
 
+// Interceptors
+import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
+import { HttpCancelInterceptor } from './interceptors/http-cancel.interceptor';
+
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 
 
 @NgModule({
@@ -52,6 +54,11 @@ import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
   ],
   exports: [ModalModule],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpCancelInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

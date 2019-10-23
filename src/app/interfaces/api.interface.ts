@@ -4,5 +4,5 @@ interface Api {
     status: number;
     message: string;
     data?: any;
-    errors: any;
+    errors?: any | ValidationErrors;
 }

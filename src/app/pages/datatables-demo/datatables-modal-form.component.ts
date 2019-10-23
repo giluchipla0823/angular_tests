@@ -1,48 +1,55 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Select2 as Select2Utils } from '../../utils/Select2';
 import { AuthorsService } from '../../services/authors.service';
 import { Select2OptionData } from 'ng2-select2';
 import { ReactiveForm } from '../../utils/ReactiveForm';
 import { BooksService } from '../../services/books.service';
 import Swal from 'sweetalert2';
-
+import { GenresService } from '../../services/genres.service';
+import { extractColumn } from '../../utils/ArrayHelper';
 
 @Component({
   selector: 'app-datatables-modal-form',
   templateUrl: './datatables-modal-form.component.html',
   styleUrls: ['./datatables-modal-form.component.css']
 })
-export class DatatablesModalFormComponent implements OnInit, AfterViewInit {
+export class DatatablesModalFormComponent implements OnInit {
   @Input() modalRef: BsModalRef;
   @Output() reloadData: EventEmitter<boolean> = new EventEmitter();
-  @ViewChild('selectAuthor', {static: false}) selectAuthor: any;
 
-  public select2Options: Select2Options = Select2Utils.getDefaultOptions();
-
-  authors: Data = {
+  authors: Select2Data = {
     data: [],
-    selected: null,
-    loading: false
+    options: Select2Utils.getDefaultOptions(),
+    disabled: false,
+    selected: null
+  };
+
+  genres: Select2Data = {
+    data: [],
+    options: {
+      ...Select2Utils.getDefaultOptions(),
+      multiple: true
+    },
+    selected: [],
+    disabled: false
   };
 
   id: number;
-  form: ReactiveForm = new ReactiveForm();
+  form: ReactiveForm;
 
   constructor(
     private booksService: BooksService,
     private authorsService: AuthorsService,
+    private genresService: GenresService,
     private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
     this.initializeForm();
+    this.getGenres();
     this.getAuthors();
-  }
-
-  ngAfterViewInit() {
-    Select2Utils.setAttributesToValidate(this.selectAuthor.element, 'author_id');
   }
 
   initializeForm(): void {
@@ -50,7 +57,7 @@ export class DatatablesModalFormComponent implements OnInit, AfterViewInit {
 
     this.id = data.id || null;
 
-    this.form.container = this.formBuilder.group({
+    const formBuilder: FormGroup = this.formBuilder.group({
       author_id: [data.authorId || '', Validators.required],
       publisher_id: [data.publisherId || 1, Validators.required],
       title: [data.title || '', Validators.required],
@@ -58,8 +65,10 @@ export class DatatablesModalFormComponent implements OnInit, AfterViewInit {
       description: [data.description || '', Validators.required],
       quantity: [data.quantity || 5, Validators.required],
       price: [data.price || '10.00', Validators.required],
-      genres: [data.genres || 1, Validators.required],
+      genres: [extractColumn(data.genres || [], 'id', true), Validators.required]
     });
+
+    this.form = new ReactiveForm(formBuilder);
   }
 
   // convenience getter for easy access to form fields
@@ -67,6 +76,9 @@ export class DatatablesModalFormComponent implements OnInit, AfterViewInit {
 
   accept(): void {
     const data: any = this.form.container.value;
+
+    console.log('data', data);
+
     const isNewRecord: boolean = this.id ? false : true;
 
     this.booksService.createOrUpdateBook(data, this.id)
@@ -91,35 +103,46 @@ export class DatatablesModalFormComponent implements OnInit, AfterViewInit {
   }
 
   getAuthors(): void {
-    this.authors.loading = true;
+    this.authors.disabled = true;
 
     this.authorsService.getAuthors()
         .subscribe((response: Api) => {
-        
           const authors: Array<Select2OptionData> = response.data.map((author: Author) => {
-            const id: number = author.id;
-            
             return {
-              id,
-              text: author.name,
-              selected: this.f.author_id.value === id
+              id: author.id,
+              text: author.name
             };
           });
 
           this.authors.data = authors;
-          this.authors.loading = false;
+          this.authors.disabled = false;
+          this.authors.selected = this.f.author_id.value;
+        });
+  }
+
+  getGenres() {
+    this.genres.disabled = true;
+    this.genresService.getGenres()
+        .subscribe((response: any) => {
+          const genres: Array<Select2OptionData> = response.data.map((genre: any) => {
+            const id: number = genre.id;
+
+            return {
+              id,
+              text: genre.name
+            };
+          });
+
+          this.genres.data = genres;
+          this.genres.disabled = false;
+          this.genres.selected = this.f.genres.value;
         });
   }
 
   eventChangeSelect(e: any, field: string): void {
-    const value = e.value;
     const control = this.f[field];
 
-    control.setValue('');
-
-    if (value) {
-      control.markAsDirty();
-      control.setValue(value);
-    }
+    control.markAsDirty();
+    control.setValue(e.value);
   }
 }

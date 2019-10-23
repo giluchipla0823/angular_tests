@@ -13,8 +13,10 @@
 
         <div *ngIf="authors.data.length === 0">
             <select2 #selectSearchAuthor
-                     [options]="select2Options"
-                     [disabled]="authors.loading">
+                     id="search_author"
+                     name="search_author"
+                     [options]="authors.options"
+                     [disabled]="authors.disabled">
                 <option></option>
             </select2>
         </div>
@@ -22,8 +24,8 @@
         <div *ngIf="authors.data.length > 0">
             <select2 #selectSearchAuthor
                      [data]="authors.data"
-                     [disabled]="authors.loading" 
-                     [options]="select2Options"
+                     [disabled]="authors.disabled" 
+                     [options]="authors.options"
                      (valueChanged)="eventChangeSelect($event, 'author')">
                 <option></option>
             </select2>

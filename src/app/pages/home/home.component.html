@@ -1,9 +1,15 @@
-<button type="button" class="btn btn-primary mr-4" (click)="showProducts()">
+<button type="button" 
+        class="btn btn-primary mr-4" 
+        [disabled]="isLoading"
+        (click)="showProducts()">
+    <i class="fa" 
+       [ngClass]="{false: 'fa-search', true: 'fa-circle-o-notch fa-spin'}[isLoading]"></i>
     {{ 'ver productos' | capitalize }}
 </button>
 
-<button type="button" class="btn btn-warning mr-4" (click)="showCities()">
-VER CIUDADES
+<button type="button" [disabled]="isLoading" class="btn btn-warning mr-4" (click)="showCities()">
+    <i *ngIf="isLoading" class="fa fa-spinner fa-pulse fa-spin"></i>
+    VER CIUDADES
 </button>
 
 <button type="button" class="btn btn-secondary mr-4" (click)="showCUPSValidate()">

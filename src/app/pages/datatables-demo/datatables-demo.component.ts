@@ -27,6 +27,7 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
     data: {}
   };
 
+
   constructor(
     private modalService: BsModalService,
     private booksService: BooksService
