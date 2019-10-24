@@ -29,14 +29,21 @@ export class DatatablesSearchFormComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getAuthors();
+
+
+  }
+
+  iterator() {
+    for (let i = 0; i < 10; i++) {
+      this.authorsService.getAuthors()
+        .subscribe();
+    }
   }
 
   ngAfterViewInit() {
-    // console.log(this.select2Author);
-    // Select2Utils.setEventToCloseWhenUnselecting(this.select2Author.element);
-    //setTimeout(() => {
       Select2Utils.setEventToCloseWhenUnselecting();
-    //}, 0);
+
+      console.log(this.select2Author);
   }
 
   search() {
@@ -51,12 +58,14 @@ export class DatatablesSearchFormComponent implements OnInit, AfterViewInit {
           const authors: Array<Select2OptionData> = response.data.map((author: Author) => {
             return {
               id: author.id,
-              text: author.name,
+              text: author.name
             };
           });
 
+          this.authors.selected = '';
           this.authors.data = authors;
           this.authors.disabled = false;
+
         });
   }
 

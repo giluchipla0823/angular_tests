@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BooksService {
-
-  BASE_URL = 'http://127.0.0.1:8000/api/';
-
-  constructor(private http: HttpClient) { }
+export class BooksService extends BaseService {
 
   getBook(id: number): Observable<any> {
     const url: string = `${this.BASE_URL}books/${id}?includes=genres`;

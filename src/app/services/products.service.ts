@@ -25,7 +25,7 @@ export class ProductsService {
   }
 
   getCUPSByAddress(){
-    // return this.http.get(`${ this.BASE_URL }cups?tipo=E&tipo_busqueda=D&cp=08950&direccion=via de prueba 1 2`);
-    return this.http.get(`${ this.BASE_URL }cups?tipo=E&tipo_busqueda=D`);
+    return this.http.get(`${ this.BASE_URL }cups?tipo=E&tipo_busqueda=D&cp=08950&direccion=via de prueba 1 2`);
+    // return this.http.get(`${ this.BASE_URL }cups?tipo=E&tipo_busqueda=D`);
   }
 }

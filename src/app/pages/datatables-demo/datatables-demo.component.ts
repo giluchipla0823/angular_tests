@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { BooksService } from '../../services/books.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
+
 declare var $;
 
 @Component({
@@ -30,7 +31,7 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
 
   constructor(
     private modalService: BsModalService,
-    private booksService: BooksService
+    private booksService: BooksService,
   ) { }
 
   ngOnInit() {
@@ -69,7 +70,9 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
   }
 
   deleteBook(id: number): void {
-    this.booksService.deleteBook(id)
+    this.booksService
+        .setActiveLoaderService(false)
+        .deleteBook(id)
         .subscribe((response: Api) => {
             Swal.fire(
               'Success',
@@ -163,7 +166,9 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
   }
 
   getBook(id: number) {
-    this.booksService.getBook(id)
+    this.booksService
+        .setActiveLoaderService(false)
+        .getBook(id)
         .subscribe((response: Api) => {
             this.openModal(response.data);
         });
@@ -191,7 +196,7 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
     );
 
     this.modalRef.content = {
-      title: 'Create Book',
+      title: data.id ? 'Edit Book' : 'Create Book',
       data
     };
   }

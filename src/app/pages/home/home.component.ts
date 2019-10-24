@@ -22,7 +22,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(){
-
+    // for(let i = 0; i < 10; i++) {
+      this.showCUPSByAddress();
+    // }
   }
 
   showProducts(){

@@ -53,6 +53,44 @@
 			</div>
 		</div>
 
+        <div class="form-group">
+			<div class="row">
+                <div class="col-md-6">
+                    <label for="quantity">Quantity</label>
+                    <input 
+                        type="text"
+                        id="quantity"
+                        name="quantity"
+                        formControlName="quantity"	
+                        class="form-control"
+                        required="true"
+                        [ngClass]="{'is-invalid': (!f.quantity.pristine || form.submitted) && f.quantity.errors }" />
+                    <div *ngIf="(!f.quantity.pristine || form.submitted) && f.quantity.errors" 
+                        class="invalid-feedback">
+                        <span *ngIf="f.quantity.errors.required">Required field</span>
+                        <span *ngIf="f.quantity.errors.pattern">Field must contain only numbers</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="price">Price</label>
+                    <input 
+                        type="text"
+                        id="price"
+                        name="price"
+                        formControlName="price"	
+                        class="form-control"
+                        required="true"
+                        [ngClass]="{'is-invalid': (!f.price.pristine || form.submitted) && f.price.errors }" />
+                    <div *ngIf="(!f.price.pristine || form.submitted) && f.price.errors" 
+                        class="invalid-feedback">
+                        <span *ngIf="f.price.errors.required">Required field</span>
+                        <span *ngIf="f.price.errors.pattern">Field must contain only numbers with two decimals</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
         <div class="form-group" [ngClass]="{'has-error': (!f.author_id.pristine || form.submitted) && f.author_id.errors }">
             <label for="author">Author</label>
 
@@ -120,9 +158,11 @@
   <div class="modal-footer">
       <button type="button" 
               class="btn btn-primary" 
-              [disabled]="form.container.invalid"
+              
               (click)="accept()">Save</button>
       <button type="button" 
               class="btn btn-secondary" 
               (click)="close()">Cerrar</button>
+
+              <!-- [disabled]="form.container.invalid" -->
   </div>

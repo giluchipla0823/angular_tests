@@ -29,6 +29,8 @@ import { HttpCancelInterceptor } from './interceptors/http-cancel.interceptor';
 
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { LoaderComponent } from './components/shared/loader/loader.component';
+import { LoaderInterceptor } from './interceptors/loader.interceptor';
 
 
 @NgModule({
@@ -40,7 +42,8 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
     DatatablesDemoComponent,
     FooterComponent,
     DatatablesSearchFormComponent,
-    DatatablesModalFormComponent
+    DatatablesModalFormComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +57,11 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
   ],
   exports: [ModalModule],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCancelInterceptor,

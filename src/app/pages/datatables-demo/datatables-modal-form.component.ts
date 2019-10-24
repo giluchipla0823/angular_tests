@@ -9,6 +9,7 @@ import { BooksService } from '../../services/books.service';
 import Swal from 'sweetalert2';
 import { GenresService } from '../../services/genres.service';
 import { extractColumn } from '../../utils/ArrayHelper';
+import Patterns from '../../utils/Patterns';
 
 @Component({
   selector: 'app-datatables-modal-form',
@@ -63,8 +64,10 @@ export class DatatablesModalFormComponent implements OnInit {
       title: [data.title || '', Validators.required],
       summary: [data.summary || '', Validators.required],
       description: [data.description || '', Validators.required],
-      quantity: [data.quantity || 5, Validators.required],
-      price: [data.price || '10.00', Validators.required],
+      quantity: [data.quantity || '', [Validators.required, Validators.pattern(Patterns.NUMBERS)]],
+      // price: [data.price || '', Validators.required],
+      // price: [data.price || '', [Validators.required, Validators.pattern(/^[.\d]+$/)]],
+      price: [data.price || '', [Validators.required, Validators.pattern(Patterns.TWO_DECIMALS)]],
       genres: [extractColumn(data.genres || [], 'id', true), Validators.required]
     });
 
@@ -75,13 +78,17 @@ export class DatatablesModalFormComponent implements OnInit {
   get f(): any { return this.form.container.controls; }
 
   accept(): void {
+
+    console.log(this.f);
+
     const data: any = this.form.container.value;
-
-    console.log('data', data);
-
     const isNewRecord: boolean = this.id ? false : true;
 
-    this.booksService.createOrUpdateBook(data, this.id)
+    // return ;
+
+    this.booksService
+      .setActiveLoaderService(false)
+      .createOrUpdateBook(data, this.id)
         .subscribe((response: Api) => {
             Swal.fire({
               title: 'Success',
@@ -104,8 +111,9 @@ export class DatatablesModalFormComponent implements OnInit {
 
   getAuthors(): void {
     this.authors.disabled = true;
-
-    this.authorsService.getAuthors()
+    this.authorsService
+        .setActiveLoaderService(false)
+        .getAuthors()
         .subscribe((response: Api) => {
           const authors: Array<Select2OptionData> = response.data.map((author: Author) => {
             return {
@@ -122,7 +130,9 @@ export class DatatablesModalFormComponent implements OnInit {
 
   getGenres() {
     this.genres.disabled = true;
-    this.genresService.getGenres()
+    this.genresService
+        .setActiveLoaderService(false)
+        .getGenres()
         .subscribe((response: any) => {
           const genres: Array<Select2OptionData> = response.data.map((genre: any) => {
             const id: number = genre.id;
