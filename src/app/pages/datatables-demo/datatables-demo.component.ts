@@ -7,7 +7,10 @@ import { BooksService } from '../../services/books.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 
+
 declare var $;
+
+
 
 @Component({
   selector: 'app-datatables-demo',
@@ -27,7 +30,6 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
   form: Form = {
     data: {}
   };
-
 
   constructor(
     private modalService: BsModalService,
@@ -92,21 +94,29 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
       lengthMenu: DatatablesUtils.LENGTH_MENU,
       serverSide: true,
       processing: true,
-      ajax: {
-        url: 'http://127.0.0.1:8000/api/books',
-        method: 'GET',
-        data: (d: any) => {
-          d.listFormat = 'datatables';
-          d.includes = 'author,genres';
+      ajax: (d: any, callback) => {
+        d.listFormat = 'datatables';
+        d.includes = 'author,genres';
 
-          for (const i in this.form.data) {
-            if (this.form.data[i]) {
-              d[i] = this.form.data[i];
-            }
+        for (const i in this.form.data) {
+          if (this.form.data[i]) {
+            d[i] = this.form.data[i];
           }
-        },
-        dataFilter: DatatablesUtils.getAjaxDataFilter,
-        dataSrc: DatatablesUtils.getAjaxDataSrc,
+        }
+
+        return this.booksService
+                   .setActiveLoaderService(false)
+                   .getBooks(d)
+                   .subscribe((response: Api) => {
+                      const data: any = response.data;
+
+                      callback({
+                          draw: data.draw,
+                          recordsTotal: data.recordsTotal,
+                          recordsFiltered: data.recordsFiltered,
+                          data: data.items
+                      });
+                  });
       },
       columns: [
         {
@@ -168,15 +178,13 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
   getBook(id: number) {
     this.booksService
         .setActiveLoaderService(false)
-        .getBook(id)
+        .getBook(id, {includes: 'genres'})
         .subscribe((response: Api) => {
             this.openModal(response.data);
         });
   }
 
   reloadData(resetPaging: boolean): void {
-    console.log('reloadData', resetPaging);
-
     DatatablesUtils.reloadData(this.nested.dtInstance, resetPaging);
   }
 

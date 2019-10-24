@@ -65,8 +65,6 @@ export class DatatablesModalFormComponent implements OnInit {
       summary: [data.summary || '', Validators.required],
       description: [data.description || '', Validators.required],
       quantity: [data.quantity || '', [Validators.required, Validators.pattern(Patterns.NUMBERS)]],
-      // price: [data.price || '', Validators.required],
-      // price: [data.price || '', [Validators.required, Validators.pattern(/^[.\d]+$/)]],
       price: [data.price || '', [Validators.required, Validators.pattern(Patterns.TWO_DECIMALS)]],
       genres: [extractColumn(data.genres || [], 'id', true), Validators.required]
     });

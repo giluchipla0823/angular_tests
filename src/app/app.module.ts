@@ -31,6 +31,8 @@ import { HttpCancelInterceptor } from './interceptors/http-cancel.interceptor';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { LoaderComponent } from './components/shared/loader/loader.component';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { LoginComponent } from './pages/login/login.component';
+import { HttpJwtInterceptor } from './interceptors/http-jwt.interceptor';
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { LoaderInterceptor } from './interceptors/loader.interceptor';
     FooterComponent,
     DatatablesSearchFormComponent,
     DatatablesModalFormComponent,
-    LoaderComponent
+    LoaderComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -70,6 +73,11 @@ import { LoaderInterceptor } from './interceptors/loader.interceptor';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpJwtInterceptor,
       multi: true
     }
   ],

@@ -7,8 +7,16 @@ import { BaseService } from './base.service';
 })
 export class BooksService extends BaseService {
 
-  getBook(id: number): Observable<any> {
-    const url: string = `${this.BASE_URL}books/${id}?includes=genres`;
+  getBooks(params?: any): Observable<any> {
+      const queryParams = this.resolveQueryParams(params);
+      const url: string = `${this.BASE_URL}books${queryParams}`;
+
+      return this.http.get(url);
+  }
+
+  getBook(id: number, params?: any): Observable<any> {
+    const queryParams = this.resolveQueryParams(params);
+    const url: string = `${this.BASE_URL}books/${id}${queryParams}`;
 
     return this.http.get(url);
   }

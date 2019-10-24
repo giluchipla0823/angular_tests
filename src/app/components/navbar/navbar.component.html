@@ -13,9 +13,28 @@
           <a class="nav-link" [routerLink]="['/datatables']">Datatables</a>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      
+      <div class="float-right">
+        <ul class="navbar-nav mr-auto">
+            <li *ngIf="!authService.isAuthenticated()" 
+                class="nav-item" 
+                routerLinkActive="active" 
+                [routerLinkActiveOptions]="{exact: true}">
+              <a class="nav-link" [routerLink]="['/login']">Login</a>
+            </li>
+            <li class="nav-item dropdown" 
+                routerLinkActive="active" 
+                [routerLinkActiveOptions]="{exact: true}"
+                *ngIf="authService.isAuthenticated()">
+              <a class="nav-link dropdown-toggle" href="javascript:void(0)" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ authService.user.name }}
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="logout();">Logout</a>
+              </div>
+            </li>
+        </ul>
+    </div>
+
     </div>
   </nav>

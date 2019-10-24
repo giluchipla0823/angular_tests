@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
 import { LoaderService } from './loader.service';
+import { SerializerParams } from '../utils/SerializerParams';
 
 @Injectable()
 export class BaseService {
@@ -16,5 +16,9 @@ export class BaseService {
         this.loaderService.setActive(active);
 
         return this;
+    }
+
+    protected resolveQueryParams(params: any) {
+        return params ? `?${SerializerParams.serialize(params)}` : '';
     }
 }

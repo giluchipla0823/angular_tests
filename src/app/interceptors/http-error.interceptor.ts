@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { Response } from '../utils/Response';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
   constructor() { }
