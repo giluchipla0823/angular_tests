@@ -4,11 +4,16 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { Response } from '../utils/Response';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -26,12 +31,32 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       }
 
       const error: Api = err.error;
+      const status: number = err.status;
 
-      if (err.status === Response.HTTP_UNPROCESSABLE_ENTITY) {
+      if (status === Response.HTTP_UNAUTHORIZED) {
+        return this.resolveUnauthorizedError(error);
+      }
+
+      if (status === Response.HTTP_UNPROCESSABLE_ENTITY) {
         return this.showValidationErrors(error);
       }
 
       return Swal.fire('Error', error.message || err.message, 'error');
+  }
+
+  private resolveUnauthorizedError(error: Api) {
+    Swal.fire({
+      title: 'Error',
+      text: error.message,
+      type: 'error',
+      allowEscapeKey: false,
+      allowOutsideClick: false
+    }).then((result: any) => {
+      if (result.value) {
+        this.authService.removeStorage();
+        this.router.navigate(['home']);
+      }
+    });
   }
 
   private showValidationErrors(error: Api) {

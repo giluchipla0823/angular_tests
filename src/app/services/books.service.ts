@@ -21,12 +21,6 @@ export class BooksService extends BaseService {
     return this.http.get(url);
   }
 
-  deleteBook(id: number): Observable<any> {
-    const url: string = `${this.BASE_URL}books/${id}`;
-
-    return this.http.delete(url);
-  }
-
   createOrUpdateBook(data: any, id?: number): Observable<any> {
     if (id) {
       return this.updatedBook(data, id);
@@ -45,5 +39,11 @@ export class BooksService extends BaseService {
     const url: string = `${this.BASE_URL}books/${id}`;
 
     return this.http.put(url, data);
+  }
+
+  deleteBook(id: number): Observable<any> {
+    const url: string = `${this.BASE_URL}books/${id}`;
+
+    return this.http.delete(url);
   }
 }

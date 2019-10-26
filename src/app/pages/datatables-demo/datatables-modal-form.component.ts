@@ -82,20 +82,22 @@ export class DatatablesModalFormComponent implements OnInit {
     const data: any = this.form.container.value;
     const isNewRecord: boolean = this.id ? false : true;
 
-    // return ;
-
+    this.form.isSaving = true;
     this.booksService
       .setActiveLoaderService(false)
       .createOrUpdateBook(data, this.id)
         .subscribe((response: Api) => {
+            this.form.isSaving = false;
+            this.reloadData.emit(isNewRecord);
+            this.close();
+
             Swal.fire({
               title: 'Success',
               text: response.message,
-              type: 'success'
+              type: 'success',
             });
-
-            this.reloadData.emit(isNewRecord);
-            this.close();
+        }, () => {
+          this.form.isSaving = false;
         });
   }
 
@@ -105,6 +107,7 @@ export class DatatablesModalFormComponent implements OnInit {
     }
 
     this.modalRef.hide();
+    document.querySelector('body').style.paddingRight = '0px';
   }
 
   getAuthors(): void {

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Response } from '../utils/Response';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,17 @@ export class AuthService {
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${this.BASE_URL}login`, {email: username, password});
+  }
+
+  logout(): Observable<any> {
+    return this.http.get(`${this.BASE_URL}logout`)
+               .pipe(
+                 map((response: Api) => {
+                    if (response.code === Response.HTTP_OK) {
+                      this.removeStorage();
+                    }
+                 })
+               );
   }
 
   saveStorage(data: any) {
@@ -40,6 +53,13 @@ export class AuthService {
     this.authenticated = this.token ? true : false;
   }
 
+  removeStorage(): void {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userdata');
+
+    this.loadStorage();
+  }
+
   isAuthenticated(): boolean {
       return this.authenticated;
   }
@@ -53,12 +73,5 @@ export class AuthService {
       data: this.user,
       token: this.token
     };
-  }
-
-  logout(): void {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userdata');
-
-    this.loadStorage();
   }
 }

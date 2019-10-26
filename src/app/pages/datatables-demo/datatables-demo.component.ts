@@ -199,7 +199,8 @@ export class DatatablesDemoComponent implements OnInit, AfterViewInit {
       this.template,
       {
         backdrop: 'static',
-        keyboard: false
+        keyboard: false,
+        class: 'modal-lg'
       }
     );
 
